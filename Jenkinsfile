@@ -21,8 +21,8 @@ pipeline {
         }
         stage('Deployment') {
             steps {
-                sh '''if  [ $ENV == "DEV" ];then
-echo "Deployed to  Dev"
+                  if  [ $ENV == "DEV" ];then
+                  echo "Deployed to  Dev"
 cp target/key.war /home/gaurav/Devops/apache-tomcat-9.0.89/webapps
 elif  [ $ENV == "QA" ];then
 echo "Deployed to  Qa"
