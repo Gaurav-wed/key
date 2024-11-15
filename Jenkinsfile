@@ -1,12 +1,13 @@
 pipeline {
-    agent any
-           triggers {
-  pollSCM ' * * * * *'
-		    }
-	parameters {
-  choice choices: ['DEV', 'QA', 'UAT'], name: 'ENV'
-		}
- 
+    agent any 
+    
+    parameters {
+        choice(name: 'ENV', choices: ['QA', 'UAT'], description: 'Select the environment')
+    }
+    
+    triggers {
+        pollSCM '* * * * *'
+    }
     
     stages {
         stage('Checkout') {
@@ -21,17 +22,17 @@ pipeline {
         }
         stage('Deployment') {
             steps {
-                  if  [ $ENV == "DEV" ];then
-                  echo "Deployed to  Dev"
-cp target/key.war /home/gaurav/Devops/apache-tomcat-9.0.89/webapps
-elif  [ $ENV == "QA" ];then
-echo "Deployed to  Qa"
-cp target/key.war /home/gaurav/Devops/apache-tomcat-9.0.89/webapps
-elif  [ $ENV == "UAT" ];then
-echo "Deployed to  Uat"
-cp target/key.war /home/gaurav/Devops/apache-tomcat-9.0.89/webapps
-fi'''
-         }
-      }	
+                script {
+                    if (env.ENV == 'QA') {
+                        sh 'cp target/pipeline.war /home/gaurav/Devops/apache-tomcat-9.0.88/webapps'
+                        echo "Deployment has been COMPLETED on QA!"
+                    } else if (env.ENV == 'UAT') {
+                        sh 'cp target/pipeline.war /home/gaurav/Devops/apache-tomcat-9.0.88/webapps'
+                        echo "Deployment has been done on UAT!"
+                    }
+                }
+            }
+        }
     }
-  }
+}
+
